@@ -69,7 +69,7 @@ public class AnasayfaFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
+    public void onResume() {//kayıtta nsonra geri dönüş yaptık diyelim, listeyi yeniden yüklüyo önemli 
         super.onResume();
         viewModel.kisileriYukle();
     }

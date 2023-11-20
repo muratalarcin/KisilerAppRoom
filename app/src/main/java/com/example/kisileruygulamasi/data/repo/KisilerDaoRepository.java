@@ -10,6 +10,7 @@ import com.example.kisileruygulamasi.room.KisilerDao;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.CompletableObserver;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -25,7 +26,25 @@ public class KisilerDaoRepository {
     }
 
     public void kaydet(String kisi_ad,String kisi_tel){
-        Log.e("Kişi Kaydet",kisi_ad+" - "+kisi_tel);
+        Kisiler yeniKisi = new Kisiler(0, kisi_ad, kisi_tel);
+        kdao.kaydet(yeniKisi).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
     }
 
     public void guncelle(int kisi_id,String kisi_ad,String kisi_tel){
