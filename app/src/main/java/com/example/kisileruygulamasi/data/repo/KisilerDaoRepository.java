@@ -5,12 +5,24 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.kisileruygulamasi.data.entity.Kisiler;
+import com.example.kisileruygulamasi.room.KisilerDao;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 public class KisilerDaoRepository {
     public MutableLiveData<List<Kisiler>> kisilerListesi = new MutableLiveData<>();
+
+    private KisilerDao kdao;
+
+    public KisilerDaoRepository(KisilerDao kdao) {
+        this.kdao = kdao;
+    }
 
     public void kaydet(String kisi_ad,String kisi_tel){
         Log.e("Kişi Kaydet",kisi_ad+" - "+kisi_tel);
@@ -30,14 +42,20 @@ public class KisilerDaoRepository {
     }
 
     public void kisileriYukle(){
-        ArrayList<Kisiler> liste = new ArrayList<>();
-        Kisiler k1 = new Kisiler(1,"Ahmet","1111");
-        Kisiler k2 = new Kisiler(2,"Zeynep","2222");
-        Kisiler k3 = new Kisiler(3,"Beyza","3333");
-        liste.add(k1);
-        liste.add(k2);
-        liste.add(k3);
+        kdao.kisileriYukle().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<List<Kisiler>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {}
 
-        kisilerListesi.setValue(liste);
+                    @Override
+                    public void onSuccess(List<Kisiler> kisilers) {
+                        kisilerListesi.setValue(kisilers);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {}
+                });
+
     }
 }
