@@ -48,16 +48,64 @@ public class KisilerDaoRepository {
     }
 
     public void guncelle(int kisi_id,String kisi_ad,String kisi_tel){
-        Log.e("Kişi Güncelle : ",kisi_id+" - "+kisi_ad+" - "+kisi_tel);
+        Kisiler guncellenenKisi = new Kisiler(kisi_id, kisi_ad, kisi_tel);
+        kdao.guncelle(guncellenenKisi).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
     }
 
     public void ara(String aramaKelimesi){
-        Log.e("Kişi Ara",aramaKelimesi);
+        kdao.ara(aramaKelimesi).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<List<Kisiler>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {}
+
+                    @Override
+                    public void onSuccess(List<Kisiler> kisilers) {
+                        kisilerListesi.setValue(kisilers);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {}
+                });
     }
 
     public void sil(int kisi_id){
-        Log.e("Kişi Sil ",String.valueOf(kisi_id));
-        kisileriYukle();
+        Kisiler silinenKisi = new Kisiler(kisi_id, "", "");
+        kdao.sil(silinenKisi).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        kisileriYukle();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
     }
 
     public void kisileriYukle(){
@@ -75,6 +123,5 @@ public class KisilerDaoRepository {
                     @Override
                     public void onError(Throwable e) {}
                 });
-
     }
 }
